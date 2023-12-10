@@ -5,6 +5,9 @@ import {StyleProperties} from '../types/style-properties.type';
 import {Feature, Geometry, Position} from 'geojson';
 import {computeDestinationPoint} from 'geolib';
 
+/**
+ * Creates a area given the center coordinate, the radius and the desired polygon type
+ */
 export abstract class AreaWithRadius {
   protected centerCoordinate: GeoPoint;
   protected radiusInMeters: number;
@@ -95,7 +98,6 @@ export abstract class AreaWithRadius {
         info.angleIncrement = 1;
         break;
       case Polygon.TRIANGLE:
-        info.angleStart = -90;
         info.angleIncrement = 120;
         break;
       case Polygon.SQUARE:
@@ -103,11 +105,9 @@ export abstract class AreaWithRadius {
         info.angleIncrement = 90;
         break;
       case Polygon.PENTAGON:
-        info.angleStart = -90;
         info.angleIncrement = 72;
         break;
       case Polygon.HEXAGON:
-        info.angleStart = -90;
         info.angleIncrement = 60;
         break;
     }
