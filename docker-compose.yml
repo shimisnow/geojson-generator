@@ -4,6 +4,10 @@ services:
   geojson-viewer:
     build: .
     image: geojson-viewer:1.0.0
+    volumes:
+      - ./geojson-server.sh:/var/geojson.io/geojson-server.sh:ro
+      - ./output:/var/geojson.io/geojson-data:ro
     ports:
       - 8099:8099
-    command: live-server --port=8099 --no-browser --cors --quiet
+    working_dir: /var/geojson.io/
+    command: ./geojson-server.sh
