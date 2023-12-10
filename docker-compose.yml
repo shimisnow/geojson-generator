@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  geojson-viewer:
+    build: .
+    image: geojson-viewer:1.0.0
+    ports:
+      - 8099:8099
+    command: live-server --port=8099 --no-browser --cors --quiet
