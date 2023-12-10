@@ -6,4 +6,10 @@ const CA = new CircularArea(
   1000
 );
 
+CA.setStyle({
+  fill: {
+    color: '#fe3ed4',
+  },
+});
+
 writeFileSync('./build/geojson.json', JSON.stringify(CA.getGeoJSON()));
