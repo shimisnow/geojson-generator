@@ -1,17 +1,25 @@
+import {Polygon} from '../enums/polygon.enum';
 import {GeoPoint} from '../types/geo-point.type';
+import {PolygonInfo} from '../types/polygon-info.type';
 import {StyleProperties} from '../types/style-properties.type';
-import {Feature, Position} from 'geojson';
+import {Feature, Geometry, Position} from 'geojson';
 import {computeDestinationPoint} from 'geolib';
 
 export abstract class AreaWithRadius {
   protected centerCoordinate: GeoPoint;
   protected radiusInMeters: number;
+  protected type: Polygon;
   protected properties: any;
   protected style: StyleProperties | undefined;
 
-  public constructor(centerCoordinate: GeoPoint, radiusInMeters: number) {
+  protected constructor(
+    centerCoordinate: GeoPoint,
+    radiusInMeters: number,
+    type: Polygon
+  ) {
     this.centerCoordinate = centerCoordinate;
     this.radiusInMeters = radiusInMeters;
+    this.type = type;
   }
 
   public setProperties(properties: any, disableMerge = false): void {
@@ -26,7 +34,7 @@ export abstract class AreaWithRadius {
     this.style = properties;
   }
 
-  protected convertStyleProperties() {
+  private convertStyleProperties() {
     const properties: Record<string, unknown> = {};
 
     if (this.style?.stroke) {
@@ -55,10 +63,15 @@ export abstract class AreaWithRadius {
     return properties;
   }
 
-  protected generatePoints(angleIncrement = 1, angleStart = 0): Position[] {
+  private generatePoints(): Position[][] {
+    const config = this.getPolygonInfo();
     const points: Position[] = [];
 
-    for (let angle = angleStart; angle <= 360; angle += angleIncrement) {
+    for (
+      let angle = config.angleStart;
+      angle <= 360;
+      angle += config.angleIncrement
+    ) {
       const point = computeDestinationPoint(
         this.centerCoordinate,
         this.radiusInMeters,
@@ -68,11 +81,64 @@ export abstract class AreaWithRadius {
       points.push([point.longitude, point.latitude]);
     }
 
-    return points;
+    return [points];
   }
 
-  public abstract getGeoJSON(
-    angleIncrement: number,
-    angleStart: number
-  ): Feature;
+  private getPolygonInfo(): PolygonInfo {
+    const info: PolygonInfo = {
+      angleIncrement: 0,
+      angleStart: 0,
+    };
+
+    switch (this.type) {
+      case Polygon.CIRCLE:
+        info.angleIncrement = 1;
+        break;
+      case Polygon.TRIANGLE:
+        info.angleStart = -90;
+        info.angleIncrement = 120;
+        break;
+      case Polygon.SQUARE:
+        info.angleStart = -45;
+        info.angleIncrement = 90;
+        break;
+      case Polygon.PENTAGON:
+        info.angleStart = -90;
+        info.angleIncrement = 72;
+        break;
+      case Polygon.HEXAGON:
+        info.angleStart = -90;
+        info.angleIncrement = 60;
+        break;
+    }
+
+    return info;
+  }
+
+  public getGeoJSON(): Feature {
+    const geometry: Geometry = {
+      type: 'Polygon',
+      coordinates: this.generatePoints(),
+    };
+
+    let properties = {};
+
+    if (this.style) {
+      properties = this.convertStyleProperties();
+    }
+
+    Object.assign(properties, {
+      centerLatitude: this.centerCoordinate.latitude,
+      centerLongitude: this.centerCoordinate.longitude,
+      radiusInMeters: this.radiusInMeters,
+    });
+
+    const circularAreaPolygon: Feature = {
+      type: 'Feature',
+      properties,
+      geometry,
+    };
+
+    return circularAreaPolygon;
+  }
 }

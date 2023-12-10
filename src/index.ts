@@ -1,5 +1,5 @@
 import {writeFileSync} from 'fs';
-import {CircularArea} from './generator/circular-area';
+import {CircularArea} from './generator/geo-area';
 
 const CA = new CircularArea(
   {latitude: -19.852055, longitude: -43.977814},
