@@ -122,4 +122,40 @@ describe('class AreaWithRadius', () => {
       expect(style).toHaveProperty('fill.opacity');
     });
   });
+
+  describe('convertStyleProperties()', () => {
+    test('method call', () => {
+      const obj = new AreaWithRadius_Dummy(
+        {latitude: -22.952125, longitude: -43.210516},
+        1000,
+        Polygon.CIRCLE
+      );
+
+      obj.setStyle({
+        stroke: {
+          color: '#ffffff',
+          width: 2,
+          opacity: 1,
+        },
+        fill: {
+          color: '#f1f1f1',
+          opacity: 0.5,
+        },
+      });
+
+      // gives access to private method
+      const styles = (obj as any).convertStyleProperties();
+
+      expect(styles).toHaveProperty('stroke');
+      expect(styles.stroke).toBe('#ffffff');
+      expect(styles).toHaveProperty('stroke-width');
+      expect(styles['stroke-width']).toBe(2);
+      expect(styles).toHaveProperty('stroke-opacity');
+      expect(styles['stroke-opacity']).toBe(1);
+      expect(styles).toHaveProperty('fill');
+      expect(styles.fill).toBe('#f1f1f1');
+      expect(styles).toHaveProperty('fill-opacity');
+      expect(styles['fill-opacity']).toBe(0.5);
+    });
+  });
 });

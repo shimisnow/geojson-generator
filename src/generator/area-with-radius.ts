@@ -46,7 +46,7 @@ export abstract class AreaWithRadius {
     return this.style;
   }
 
-  private convertStyleProperties() {
+  private convertStyleProperties(): Record<string, unknown> {
     const properties: Record<string, unknown> = {};
 
     if (this.style?.stroke) {
