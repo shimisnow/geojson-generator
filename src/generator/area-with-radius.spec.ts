@@ -65,4 +65,61 @@ describe('class AreaWithRadius', () => {
       expect(properties.propB).toBe('B');
     });
   });
+
+  describe('setStyle()', () => {
+    test('method unused', () => {
+      const obj = new AreaWithRadius_Dummy(
+        {latitude: -22.952125, longitude: -43.210516},
+        1000,
+        Polygon.CIRCLE
+      );
+
+      const style = obj.getStyle();
+
+      expect(Object.keys(style).length).toBe(0);
+    });
+    test('only stroke options', () => {
+      const obj = new AreaWithRadius_Dummy(
+        {latitude: -22.952125, longitude: -43.210516},
+        1000,
+        Polygon.CIRCLE
+      );
+
+      obj.setStyle({stroke: {color: '#ffffff'}});
+
+      const style = obj.getStyle();
+      expect(style).toHaveProperty('stroke');
+      expect(style).toHaveProperty('stroke.color');
+      expect(style).not.toHaveProperty('fill');
+    });
+    test('only fill options', () => {
+      const obj = new AreaWithRadius_Dummy(
+        {latitude: -22.952125, longitude: -43.210516},
+        1000,
+        Polygon.CIRCLE
+      );
+
+      obj.setStyle({fill: {opacity: 0.5}});
+
+      const style = obj.getStyle();
+      expect(style).toHaveProperty('fill');
+      expect(style).toHaveProperty('fill.opacity');
+      expect(style).not.toHaveProperty('stroke');
+    });
+    test('both stroke and fill options', () => {
+      const obj = new AreaWithRadius_Dummy(
+        {latitude: -22.952125, longitude: -43.210516},
+        1000,
+        Polygon.CIRCLE
+      );
+
+      obj.setStyle({stroke: {color: '#ffffff'}, fill: {opacity: 0.5}});
+
+      const style = obj.getStyle();
+      expect(style).toHaveProperty('stroke');
+      expect(style).toHaveProperty('stroke.color');
+      expect(style).toHaveProperty('fill');
+      expect(style).toHaveProperty('fill.opacity');
+    });
+  });
 });

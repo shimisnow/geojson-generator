@@ -13,7 +13,7 @@ export abstract class AreaWithRadius {
   protected radiusInMeters: number;
   protected type: Polygon;
   protected properties: any;
-  protected style: StyleProperties | undefined;
+  protected style: StyleProperties;
 
   protected constructor(
     centerCoordinate: GeoPoint,
@@ -23,6 +23,7 @@ export abstract class AreaWithRadius {
     this.centerCoordinate = centerCoordinate;
     this.radiusInMeters = radiusInMeters;
     this.type = type;
+    this.style = {};
   }
 
   public setProperties(properties: any, disableMerge = false): void {
@@ -39,6 +40,10 @@ export abstract class AreaWithRadius {
 
   public setStyle(properties: StyleProperties): void {
     this.style = properties;
+  }
+
+  public getStyle(): StyleProperties {
+    return this.style;
   }
 
   private convertStyleProperties() {
