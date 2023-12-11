@@ -14,9 +14,8 @@
     "test": "jest",
     "compile": "tsc",
     "fix": "gts fix",
-    "prepare": "npm.cmd run compile",
-    "pretest": "npm.cmd run compile",
-    "posttest": "npm.cmd run lint"
+    "prepare": "npm run compile",
+    "pretest": "npm run compile"
   },
   "dependencies": {
     "@types/geojson": "^7946.0.13",
