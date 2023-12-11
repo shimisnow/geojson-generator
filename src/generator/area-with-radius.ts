@@ -29,8 +29,12 @@ export abstract class AreaWithRadius {
     if (disableMerge) {
       this.properties = properties;
     } else {
-      Object.assign(this.properties, ...properties);
+      this.properties = {...this.properties, ...properties};
     }
+  }
+
+  public getProperties() {
+    return this.properties;
   }
 
   public setStyle(properties: StyleProperties): void {
